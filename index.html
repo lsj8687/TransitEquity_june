@@ -37,6 +37,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 0;
+    cursor: pointer;
 }
 #map_aft {
     position: absolute;
@@ -45,6 +46,7 @@ body {
     right: 0px;
     width: 100%;
     z-index: 0;
+    cursor: pointer;
 }
 #navbar {
     position: absolute;
@@ -243,7 +245,7 @@ body {
       left: 0%;
       top: 440px;
       width: 260px;
-      height: 120px;
+      height: 80px;
       z-index: 1;
   }
   .sliderContentAbsolute {
@@ -260,7 +262,7 @@ body {
     left: 0%;
     top: 440px;
     width: 260px;
-    height: 120px;
+    height: 80px;
   }
   .sliderContentRelative {
     font-weight: 300;
@@ -602,14 +604,19 @@ function getSlider_abs(){
 	document.getElementsByClassName("sliderContentAbsolute")[0].style.visibility = "visible";
 	document.getElementsByClassName("sliderContentAbsolute")[0].style.zIndex = "1";
 	document.getElementsByClassName("sliderContentRelative")[0].style.visibility = "hidden";
-    time_filter = 45
+  document.getElementById("myRange_abs").value = 45;
+    time_filter = 45;
+    sliderValue_abs.innerHTML = 45;
 }
 // show the relative slider while hiding the absolute one - by clicking the radio button
 function getSlider_rel(){
 	document.getElementsByClassName("sliderContentAbsolute")[0].style.visibility = "hidden";
 	document.getElementsByClassName("sliderContentRelative")[0].style.visibility = "visible";
 	document.getElementsByClassName("sliderContentRelative")[0].style.zIndex = "1";
-    time_filter = 2
+  document.getElementById("myRange_rel").value = 2;
+  // reset the value and slidervalue
+    time_filter = 2;
+    sliderValue_rel.innerHTML = 2;
 }
   
   // print the specified color due to the clicked label
@@ -650,14 +657,14 @@ function getSlider_rel(){
   map_bef.on('load', () => {
     // Add a custom vector tileset source
   
-  map_bef.addSource('before_0614', {type: 'vector', url: "mapbox://lsj97.before_0614"});
+  map_bef.addSource('before_0615', {type: 'vector', url: "mapbox://lsj97.before_0615"});
   
   map_bef.addLayer(
   {
       'id': 'bef_base',
       'type': 'fill',
-      'source': 'before_0614',
-      'source-layer': 'before_0614',
+      'source': 'before_0615',
+      'source-layer': 'before_0615',
       'paint': {
       'fill-color': [
           'match', ['get', label],
@@ -682,8 +689,8 @@ function getSlider_rel(){
   {
       'id': 'bef_over',
       'type': 'fill',
-      'source': 'before_0614',
-      'source-layer': 'before_0614',
+      'source': 'before_0615',
+      'source-layer': 'before_0615',
       'paint': {
       'fill-color': [
           'match', ['get', label],
@@ -703,6 +710,22 @@ function getSlider_rel(){
         }
       },
     );
+
+    map_bef.addLayer(
+    {
+      'id': 'bef_hover',
+      'type': 'fill',
+      'source': 'before_0615',
+      'source-layer': 'before_0615',
+      'paint': {
+        'fill-outline-color': '#000000',
+        'fill-color': '#000000',
+        'fill-opacity': 0.5
+        },
+        'filter': ['in', 'geo.id', ]
+      },
+    );
+
 
 //   demand type
   document.getElementById('demand').addEventListener('change', (event) => {
@@ -967,6 +990,23 @@ function getSlider_rel(){
   
 });
 
+map_bef.on('mousemove', 'bef_base', (e) => {
+    map_bef.getCanvas().style.cursor = 'pointer';
+
+    map_bef.setFilter('bef_hover', ['in', 'geo.id', e.features[0].properties['geo.id']]);
+    map_aft.setFilter('aft_hover', ['in', 'geo.id', e.features[0].properties['geo.id']]);
+
+    console.log(e.features[0].properties)
+  });
+
+  map_bef.on('mouseleave', 'bef_base', (e) => {
+    map_bef.getCanvas().style.cursor = '';
+
+    map_bef.setFilter('bef_hover', ['in', 'geo.id', ]);
+    map_aft.setFilter('aft_hover', ['in', 'geo.id', ]);
+
+  });
+
   map_bef.on('click', 'bef_base', (es) => {
     label_cho = label
     color_cho = es.features['0']['properties'][label]
@@ -1106,14 +1146,14 @@ function getSlider_rel(){
       // map the base block group data
   map_aft.on('load', () => {
     // Add a custom vector tileset source
-    map_aft.addSource('after_0614', {type: 'vector', url: "mapbox://lsj97.after_0614"});
+    map_aft.addSource('after_0615', {type: 'vector', url: "mapbox://lsj97.after_0615"});
 
     map_aft.addLayer(
       {
         'id': 'aft_base',
         'type': 'fill',
-        'source': 'after_0614',
-        'source-layer': 'after_0614',
+        'source': 'after_0615',
+        'source-layer': 'after_0615',
         'paint': {
           'fill-color': [
               'match', ['get', label],
@@ -1139,8 +1179,8 @@ function getSlider_rel(){
     {
       'id': 'aft_over',
       'type': 'fill',
-      'source': 'after_0614',
-      'source-layer': 'after_0614',
+      'source': 'after_0615',
+      'source-layer': 'after_0615',
       'paint': {
       'fill-color': [
           'match', ['get', label],
@@ -1160,6 +1200,22 @@ function getSlider_rel(){
         }
       },
     );
+
+    map_aft.addLayer(
+    {
+      'id': 'aft_hover',
+      'type': 'fill',
+      'source': 'after_0615',
+      'source-layer': 'after_0615',
+      'paint': {
+        'fill-outline-color': '#000000',
+        'fill-color': '#000000',
+        'fill-opacity': 0.5
+        },
+        'filter': ['in', 'geo.id', ]
+      },
+    );
+
 
   document.getElementById('demand').addEventListener('change', (event) => {
     const demand_target = event.target.value;
@@ -1371,6 +1427,23 @@ document.getElementById('filters_meas').addEventListener('change', (event_meas) 
                   'black'
               ]
       );
+  });
+
+  map_aft.on('mousemove', 'aft_base', (e) => {
+    map_aft.getCanvas().style.cursor = 'pointer';
+
+    map_bef.setFilter('bef_hover', ['in', 'geo.id', e.features[0].properties['geo.id']]);
+    map_aft.setFilter('aft_hover', ['in', 'geo.id', e.features[0].properties['geo.id']]);
+
+    console.log(e.features[0].properties)
+  });
+
+  map_aft.on('mouseleave', 'aft_base', (e) => {
+    map_aft.getCanvas().style.cursor = '';
+
+    map_bef.setFilter('bef_hover', ['in', 'geo.id', ]);
+    map_aft.setFilter('aft_hover', ['in', 'geo.id', ]);
+
   });
   
   map_aft.on('click', 'aft_base', (er) => {
